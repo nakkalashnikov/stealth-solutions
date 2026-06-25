@@ -148,6 +148,19 @@ section.task h2 {
   word-break: break-word;
 }
 
+.diagram {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: clamp(0.8rem, 3.4vw, 0.92rem);
+  background: #232323;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0.6rem 0 1.2rem;
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.4;
+}
+
 h3.part-title {
   font-size: clamp(0.95rem, 4vw, 1.05rem);
   margin-top: 1.6rem;
@@ -265,6 +278,45 @@ table.partition-log th {
   color: var(--muted);
   font-family: "Georgia", serif;
   font-weight: normal;
+}
+
+.dp-table-wrap {
+  overflow-x: auto;
+  margin: 0.8rem 0;
+}
+
+table.dp-table {
+  border-collapse: collapse;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: clamp(0.68rem, 2.8vw, 0.8rem);
+}
+
+table.dp-table th, table.dp-table td {
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.45rem;
+  text-align: center;
+  min-width: 1.8rem;
+}
+
+table.dp-table th {
+  color: var(--muted);
+  font-family: "Georgia", serif;
+  font-weight: normal;
+  background: #1b1b1b;
+}
+
+table.dp-table td.on-path {
+  background: #1f5c2a;
+  border-color: #4fcf6a;
+  color: #c9f5d2;
+  font-weight: bold;
+}
+
+table.dp-table td.lookup {
+  background: #1c4566;
+  border-color: #6cb6ff;
+  color: #d6ecff;
+  font-weight: bold;
 }
 
 .answer-box {

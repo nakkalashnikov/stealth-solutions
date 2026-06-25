@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import { useSequenceStore, useBstSequenceStore } from "./store/sequenceStore.js";
+import { useKnapsackStore } from "./store/knapsackStore.js";
 import SequenceForm from "./components/SequenceForm.jsx";
 import HeapSortSection from "./components/HeapSortSection.jsx";
 import QuickSortSection from "./components/QuickSortSection.jsx";
 import BstSection from "./components/BstSection.jsx";
+import GraphGuideSection from "./components/GraphGuideSection.jsx";
+import KnapsackForm from "./components/KnapsackForm.jsx";
+import KnapsackSection from "./components/KnapsackSection.jsx";
 
 export default function App() {
   const sequence = useSequenceStore((s) => s.sequence);
@@ -12,8 +16,12 @@ export default function App() {
   const bstSequence = useBstSequenceStore((s) => s.sequence);
   const initBst = useBstSequenceStore((s) => s.init);
 
+  const knapsackValue = useKnapsackStore((s) => s.value);
+  const initKnapsack = useKnapsackStore((s) => s.init);
+
   useEffect(() => { init(); }, [init]);
   useEffect(() => { initBst(); }, [initBst]);
+  useEffect(() => { initKnapsack(); }, [initKnapsack]);
 
   return (
     <>
@@ -25,6 +33,8 @@ export default function App() {
       <nav className="toc">
         <a href="#task1">Task 1: Heap Sort / Quick Sort</a>
         <a href="#task2">Task 2: BST</a>
+        <a href="#task3">Task 3: Graphs</a>
+        <a href="#task4">Task 4: Knapsack</a>
       </nav>
 
       <main>
@@ -50,6 +60,22 @@ export default function App() {
           <div className="task-input">[{bstSequence.join(", ")}]</div>
 
           <BstSection sequence={bstSequence} />
+        </section>
+
+        <section className="task" id="task3">
+          <h2>Task 3</h2>
+          <GraphGuideSection />
+        </section>
+
+        <section className="task" id="task4">
+          <h2>Task 4</h2>
+
+          <KnapsackForm />
+          <div className="task-input">
+            b = {knapsackValue.capacity}; items = [{knapsackValue.items.map((i) => `${i.size}:${i.value}`).join(", ")}]
+          </div>
+
+          <KnapsackSection capacity={knapsackValue.capacity} items={knapsackValue.items} />
         </section>
       </main>
     </>
