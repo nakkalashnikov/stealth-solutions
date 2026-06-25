@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { InvalidSequenceError } from "../domain/sequence.js";
 
-export function makeSequenceRouter({ getSequence, updateSequence, eventBus }) {
+export function makeSequenceRouter({ resourcePath, getSequence, updateSequence, eventBus }) {
   const router = Router();
 
-  router.get("/sequence", (req, res) => {
+  router.get(`/${resourcePath}`, (req, res) => {
     res.json(getSequence());
   });
 
-  router.post("/sequence", (req, res) => {
+  router.post(`/${resourcePath}`, (req, res) => {
     try {
       const result = updateSequence(req.body?.sequence);
       res.json(result);
@@ -21,7 +21,7 @@ export function makeSequenceRouter({ getSequence, updateSequence, eventBus }) {
     }
   });
 
-  router.get("/sequence/stream", (req, res) => {
+  router.get(`/${resourcePath}/stream`, (req, res) => {
     res.writeHead(200, {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

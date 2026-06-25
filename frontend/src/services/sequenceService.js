@@ -1,35 +1,37 @@
 // All HTTP/SSE access to the backend lives here — components and the store
-// never call fetch()/EventSource directly.
+// never call fetch()/EventSource directly. resourcePath selects which shared
+// sequence ("sequence" for Task 1, "bst-sequence" for Task 2) — each is an
+// independent resource on the backend, isolated from the other.
 
-const API_URL = "/api/sequence";
-const STREAM_URL = "/api/sequence/stream";
 const POLL_MS = 4000;
 
-export async function fetchSequence() {
-  const res = await fetch(API_URL, { cache: "no-store" });
-  if (!res.ok) throw new Error(`GET ${API_URL} failed: ${res.status}`);
+export async function fetchSequence(resourcePath) {
+  const url = `/api/${resourcePath}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`GET ${url} failed: ${res.status}`);
   return res.json(); // { sequence, updatedAt }
 }
 
-export async function postSequence(sequence) {
-  const res = await fetch(API_URL, {
+export async function postSequence(resourcePath, sequence) {
+  const url = `/api/${resourcePath}`;
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sequence }),
   });
   const body = await res.json();
-  if (!res.ok) throw new Error(body.error || `POST ${API_URL} failed: ${res.status}`);
+  if (!res.ok) throw new Error(body.error || `POST ${url} failed: ${res.status}`);
   return body;
 }
 
 // Subscribes to live updates. Prefers SSE; if EventSource isn't available
 // (some watch browsers), falls back to polling. Returns an unsubscribe fn.
-export function subscribeToSequence(onUpdate, onStatusChange) {
+export function subscribeToSequence(resourcePath, onUpdate, onStatusChange) {
   if (typeof EventSource === "undefined") {
-    return subscribeByPolling(onUpdate, onStatusChange);
+    return subscribeByPolling(resourcePath, onUpdate, onStatusChange);
   }
 
-  const source = new EventSource(STREAM_URL);
+  const source = new EventSource(`/api/${resourcePath}/stream`);
   source.addEventListener("update", (ev) => {
     onStatusChange?.("synced");
     onUpdate(JSON.parse(ev.data));
@@ -40,11 +42,11 @@ export function subscribeToSequence(onUpdate, onStatusChange) {
   return () => source.close();
 }
 
-function subscribeByPolling(onUpdate, onStatusChange) {
+function subscribeByPolling(resourcePath, onUpdate, onStatusChange) {
   let lastUpdatedAt = null;
   const tick = async () => {
     try {
-      const data = await fetchSequence();
+      const data = await fetchSequence(resourcePath);
       onStatusChange?.("synced");
       if (data.updatedAt !== lastUpdatedAt) {
         lastUpdatedAt = data.updatedAt;

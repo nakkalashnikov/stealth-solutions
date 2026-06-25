@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
-import { useSequenceStore } from "../store/sequenceStore.js";
 
-export default function SequenceForm() {
-  const sequence = useSequenceStore((s) => s.sequence);
-  const formError = useSequenceStore((s) => s.formError);
-  const status = useSequenceStore((s) => s.status);
-  const submit = useSequenceStore((s) => s.submit);
+export default function SequenceForm({ useStore, inputId, label, placeholder }) {
+  const sequence = useStore((s) => s.sequence);
+  const formError = useStore((s) => s.formError);
+  const status = useStore((s) => s.status);
+  const submit = useStore((s) => s.submit);
   const inputRef = useRef(null);
 
   // keep the input in sync with remote updates, but never while the user is typing
@@ -23,15 +22,15 @@ export default function SequenceForm() {
         submit(inputRef.current.value);
       }}
     >
-      <label htmlFor="sequence-input">Input sequence</label>
+      <label htmlFor={inputId}>{label}</label>
       <input
-        id="sequence-input"
+        id={inputId}
         ref={inputRef}
         type="text"
         inputMode="numeric"
         autoComplete="off"
         defaultValue={sequence.join(", ")}
-        placeholder="e.g. 12, 3, 5, 43, 16, 15, 17, 0, 1, 5, 0, 89, 23"
+        placeholder={placeholder}
       />
       <button type="submit">Generate</button>
       {status === "offline" && <span className="sync-badge">offline — not synced</span>}
