@@ -1,0 +1,12 @@
+services:
+  app:
+    networks:
+      caddy:
+        aliases:
+          - stealth-solutions
+#    ports:
+#      - "127.0.0.1:${HOST_PORT:-3001}:3001"
+
+networks:
+  caddy:
+    external: true

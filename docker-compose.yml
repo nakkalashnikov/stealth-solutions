@@ -1,11 +1,10 @@
 services:
   app:
     build: .
-    ports:
-      - "${HOST_PORT:-3001}:3001"
+    image: stealth-solutions
+    restart: unless-stopped
     volumes:
       - sequence-data:/app/data
-    restart: unless-stopped
 
 volumes:
   sequence-data:

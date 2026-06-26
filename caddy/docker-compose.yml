@@ -1,0 +1,22 @@
+services:
+  caddy:
+    image: ghcr.io/caddybuilds/caddy-cloudflare:latest
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "0.0.0.0:443:443/udp"
+    networks:
+      - caddy
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    env_file:
+      - .env
+
+networks:
+  caddy:
+    external: true
+
+volumes:
+  caddy_data:

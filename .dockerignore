@@ -4,3 +4,5 @@ backend/data
 .git
 .claude
 specs
+caddy
+docker-compose*.yml*
