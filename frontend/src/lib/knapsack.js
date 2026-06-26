@@ -26,18 +26,30 @@ export function knapsackDP(items, capacity) {
 }
 
 // Walks the table from [n][capacity] back to [0][0] to find which items were
-// taken — standard DP backtrace, doesn't re-derive anything already in the table.
+// taken — standard DP backtrace, doesn't re-derive anything already in the
+// table. `steps` records the comparison made at each i, for narrating the
+// walk on screen (one entry per i, from n down to 1).
 export function backtrace(table, items, capacity) {
   const chosen = [];
+  const steps = [];
   let c = capacity;
+
   for (let i = items.length; i > 0; i--) {
-    if (table[i][c] !== table[i - 1][c]) {
+    const dpWith = table[i][c];
+    const dpWithout = table[i - 1][c];
+    const taken = dpWith !== dpWithout;
+    const cBefore = c;
+
+    if (taken) {
       chosen.push(i); // 1-indexed, matches the conspect's "item i"
       c -= items[i - 1].size;
     }
+
+    steps.push({ i, cBefore, cAfter: c, taken, dpWith, dpWithout });
   }
+
   chosen.reverse();
-  return { chosenItems: chosen, optimalValue: table[items.length][capacity] };
+  return { chosenItems: chosen, optimalValue: table[items.length][capacity], steps };
 }
 
 // Sort by value/size ratio (descending), then greedily fill the capacity,

@@ -3,8 +3,7 @@ import { knapsackDP, backtrace, fractionalKnapsack } from "../lib/knapsack.js";
 
 export default function KnapsackSection({ capacity, items }) {
   const table = knapsackDP(items, capacity);
-  const { chosenItems, optimalValue } = backtrace(table, items, capacity);
-  const chosenSet = new Set(chosenItems);
+  const { chosenItems, optimalValue, steps: backtraceSteps } = backtrace(table, items, capacity);
   const totalChosenSize = chosenItems.reduce((sum, i) => sum + items[i - 1].size, 0);
 
   const [lookupN, setLookupN] = useState(Math.min(4, items.length));
@@ -34,8 +33,11 @@ DP[i][c] = max(DP[i-1][c], DP[i-1][c-size[i]] + value[i])   if size[i] <= c
 DP[0][c] = 0  (no elements)
 DP[i][0] = 0  (capacity 0)`}</pre>
 
-      <p>Full table for capacity <strong>b = {capacity}</strong> and all {items.length} items
-        (green = cells on the backtrace path to the optimal solution):</p>
+      <p>Full table for capacity <strong>b = {capacity}</strong> and all {items.length} items.
+        The green cells are every <code>(i, c)</code> visited while tracing back from{" "}
+        <code>DP[{items.length}][{capacity}]</code> to <code>DP[0][...]</code> below — not
+        only the cells where an item was taken, but the whole path the backtrace walked to
+        find the answer:</p>
 
       <div className="dp-table-wrap">
         <table className="dp-table">
@@ -59,6 +61,20 @@ DP[i][0] = 0  (capacity 0)`}</pre>
       </div>
 
       <h4>b) Chosen elements for the optimal solution</h4>
+      <p>Reading the answer back out of the table: start at <code>DP[{items.length}][{capacity}]</code>{" "}
+        and walk up to <code>i = 0</code>. At each <code>i</code>, compare <code>DP[i][c]</code>{" "}
+        to <code>DP[i-1][c]</code> (the value <em>without</em> item <code>i</code>):</p>
+      <ul className="steps">
+        {backtraceSteps.map((s) => (
+          <li key={s.i}>
+            <code>i={s.i}, c={s.cBefore}</code>: DP[{s.i}][{s.cBefore}]={s.dpWith} vs DP[{s.i - 1}][{s.cBefore}]={s.dpWithout}
+            {" → "}
+            {s.taken
+              ? <>different → <strong>item {s.i} taken</strong> → move to i={s.i - 1}, c={s.cAfter} (capacity drops by item {s.i}'s size)</>
+              : <>equal → item {s.i} <strong>not</strong> taken → move to i={s.i - 1}, c={s.cAfter}</>}
+          </li>
+        ))}
+      </ul>
       <p>
         {chosenItems.length === 0
           ? "No item fits within the capacity."
