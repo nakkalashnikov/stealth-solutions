@@ -175,6 +175,13 @@ h4 {
   color: var(--ink);
 }
 
+h5 {
+  font-size: clamp(0.85rem, 3.4vw, 0.92rem);
+  margin-top: 1.1rem;
+  margin-bottom: 0.3rem;
+  color: var(--accent);
+}
+
 p, li { font-size: clamp(0.88rem, 3.6vw, 1rem); }
 
 ol.steps {

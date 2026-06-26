@@ -8,6 +8,7 @@ import BstSection from "./components/BstSection.jsx";
 import GraphGuideSection from "./components/GraphGuideSection.jsx";
 import KnapsackForm from "./components/KnapsackForm.jsx";
 import KnapsackSection from "./components/KnapsackSection.jsx";
+import ComplexityClassesSection from "./components/ComplexityClassesSection.jsx";
 
 export default function App() {
   const sequence = useSequenceStore((s) => s.sequence);
@@ -35,6 +36,7 @@ export default function App() {
         <a href="#task2">Task 2: BST</a>
         <a href="#task3">Task 3: Graphs</a>
         <a href="#task4">Task 4: Knapsack</a>
+        <a href="#task5">Task 5: Complexity classes</a>
       </nav>
 
       <main>
@@ -76,6 +78,11 @@ export default function App() {
           </div>
 
           <KnapsackSection capacity={knapsackValue.capacity} items={knapsackValue.items} />
+        </section>
+
+        <section className="task" id="task5">
+          <h2>Task 5</h2>
+          <ComplexityClassesSection />
         </section>
       </main>
     </>
